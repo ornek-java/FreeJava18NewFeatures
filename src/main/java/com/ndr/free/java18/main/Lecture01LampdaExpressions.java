@@ -1,19 +1,18 @@
 package com.ndr.free.java18.main;
 
-import com.ndr.free.java18.model.SampleInterface01_1;
-import com.ndr.free.java18.model.SampleInterface01_2;
 import com.ndr.free.java18.model.SampleInterface01_3;
 import com.ndr.free.java18.model.SampleInterface01_4;
 import com.ndr.free.java18.model.SampleInterface01_5;
+import com.ndr.free.java18.model.SupplierFunctionalInterface;
 
-public class SampleMain01 {
+public class Lecture01LampdaExpressions {
 
 	public static void main(String[] args) {
-		SampleInterface01_1 sampleInterface1_1 = () -> System.out.println("Hello World!");
-		sampleInterface1_1.sampleMethod1();
+		Runnable runnable = () -> System.out.println("Hello World!");
+		runnable.run();
 		
-		SampleInterface01_2 sampleInterface1_2 = () -> Math.PI;
-		System.out.println(sampleInterface1_2.sampleMethod1());
+		SupplierFunctionalInterface supplier = () -> Math.PI;
+		System.out.println(supplier.get());
 		
 		SampleInterface01_3 sampleInterface1_3 = (strValue) -> System.out.println(strValue);
 		sampleInterface1_3.sampleMethod1("Hello World!");
