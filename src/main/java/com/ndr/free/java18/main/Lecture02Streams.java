@@ -1,15 +1,19 @@
 package com.ndr.free.java18.main;
 
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import com.ndr.free.java18.model.SampleModel;
 
 public class Lecture02Streams {
 
+	
+	
 	public static void main(String[] args) {
 		List<SampleModel> sampleModelList = new ArrayList<>();
 		
@@ -17,6 +21,7 @@ public class Lecture02Streams {
 		
 		parallelStreams(sampleModelList);
 		
+		groupingStreamsByProperty(sampleModelList);
 	}
 
 	
@@ -39,4 +44,12 @@ public class Lecture02Streams {
 														.collect(toList());
 		
 	}
+	
+	private static void groupingStreamsByProperty(List<SampleModel> sampleModelList) {
+		Map<String, List<SampleModel>> sampleModelListByStrProperty = sampleModelList.stream()
+																						.collect(groupingBy(SampleModel::getStrProperty1));
+		
+	}
+	
+	
 }
