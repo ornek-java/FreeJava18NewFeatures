@@ -1,8 +1,8 @@
 package com.ndr.free.java18.main;
 
-import com.ndr.free.java18.model.SampleInterface01_3;
-import com.ndr.free.java18.model.SampleInterface01_4;
-import com.ndr.free.java18.model.SampleInterface01_5;
+import com.ndr.free.java18.model.BiFunctionFunctionalInterface;
+import com.ndr.free.java18.model.ComsumerFunctionalInterface;
+import com.ndr.free.java18.model.FunctionFunctionalInterface;
 import com.ndr.free.java18.model.SupplierFunctionalInterface;
 
 public class Lecture01LampdaExpressions {
@@ -14,17 +14,17 @@ public class Lecture01LampdaExpressions {
 		SupplierFunctionalInterface supplier = () -> Math.PI;
 		System.out.println(supplier.get());
 		
-		SampleInterface01_3 sampleInterface1_3 = (strValue) -> System.out.println(strValue);
-		sampleInterface1_3.sampleMethod1("Hello World!");
+		ComsumerFunctionalInterface consumer = (strValue) -> System.out.println(strValue);
+		consumer.accept("Hello World!");
 		
-		SampleInterface01_4 sampleInterface1_4 = (int nValue) -> nValue * nValue;
-		System.out.println(sampleInterface1_4.sampleMethod1(2));
+		FunctionFunctionalInterface function = (int nValue) -> nValue * nValue;
+		System.out.println(function.apply(2));
 		
-		sampleMethod1( (nValue1, nValue2) -> {return nValue1 > nValue2;} );
+		passingFunctionalInterface( (nValue1, nValue2) -> {return nValue1 > nValue2;} );
 		
 	}
 	
-	private static void sampleMethod1(SampleInterface01_5 sampleInterface1_5){
-		System.out.println(sampleInterface1_5.sampleMethod1(3,5));
+	private static void passingFunctionalInterface(BiFunctionFunctionalInterface biFunction){
+		System.out.println(biFunction.apply(3,5));
 	}
 }
