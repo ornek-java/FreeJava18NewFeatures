@@ -2,6 +2,7 @@ package com.ndr.free.java18.main;
 
 import static java.util.Comparator.comparing;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.function.BiFunction;
@@ -33,7 +34,7 @@ public class Lecture01LampdaExpressions {
 		
 		constructerReferences();
 		
-		combiningFunctionalInterfaces();
+		composingFunctionalInterfaces();
 	}
 			
 
@@ -124,7 +125,7 @@ public class Lecture01LampdaExpressions {
 	
 
 
-	private static void combiningFunctionalInterfaces() {
+	private static void composingFunctionalInterfaces() {
 		Predicate<Integer> samplePredicate1 =  (n) -> n > 50 ;
 		System.out.println("1." + samplePredicate1.test(55));
 		Predicate<Integer> samplePredicate2 = samplePredicate1.negate();
@@ -138,6 +139,11 @@ public class Lecture01LampdaExpressions {
 		Predicate<Integer> samplePredicate6 = samplePredicate4.or(samplePredicate5);
 		System.out.println("4." + samplePredicate6.test(30));
 		System.out.println("5." + samplePredicate6.test(45));
+		
+		Function<Double, Double> function1 = x -> (new BigDecimal(x)).multiply(new BigDecimal(1.8)).doubleValue();
+		Function<Double, Double> function2 = y -> (new BigDecimal(y)).add(new BigDecimal(32)).doubleValue();
+		Function<Double, Double> function3 = function1.andThen(function2);
+		System.out.println(function3.apply( new BigDecimal(37).doubleValue()));
 		
 	}
 
