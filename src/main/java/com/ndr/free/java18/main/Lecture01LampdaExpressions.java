@@ -32,8 +32,11 @@ public class Lecture01LampdaExpressions {
 		methodReferences();
 		
 		constructerReferences();
+		
+		combiningFunctionalInterfaces();
 	}
 			
+
 
 
 	private static void builtInFunctionalInterfaces() {
@@ -118,4 +121,26 @@ public class Lecture01LampdaExpressions {
 		System.out.println(sampleModel);
 
 	}
+	
+
+
+	private static void combiningFunctionalInterfaces() {
+		Predicate<Integer> samplePredicate1 =  (n) -> n > 50 ;
+		System.out.println("1." + samplePredicate1.test(55));
+		Predicate<Integer> samplePredicate2 = samplePredicate1.negate();
+		System.out.println("2." + samplePredicate2.test(55));
+		
+		Predicate<Integer> samplePredicate3 = (n) -> n < 100;
+		Predicate<Integer> samplePredicate4 = samplePredicate1.and(samplePredicate3);
+		System.out.println("3." + samplePredicate4.test(55));
+		
+		Predicate<Integer> samplePredicate5 = (n) -> n < 40;
+		Predicate<Integer> samplePredicate6 = samplePredicate4.or(samplePredicate5);
+		System.out.println("4." + samplePredicate6.test(30));
+		System.out.println("5." + samplePredicate6.test(45));
+		
+	}
+
+	
+	
 }
