@@ -2,10 +2,15 @@ package com.ndr.free.java18.model;
 
 public class SampleModel {
 
+	private Integer intProperty1;
 	private String strProperty1;
 	private String strProperty2;
 	
 	public SampleModel() {
+	}
+	
+	public SampleModel(Integer intProperty1) {
+		this.intProperty1 = intProperty1;
 	}
 	
 	public SampleModel(String strParam1) {
@@ -26,12 +31,15 @@ public class SampleModel {
 		return strProperty2;
 	}
 
+	public Integer getIntProperty1() {
+		return intProperty1;
+	}
+
 	@Override
 	public String toString() {
-		return "SampleModel [strProperty1=" + strProperty1 + ", strProperty2=" + strProperty2 + "]";
+		return "SampleModel [intProperty1=" + intProperty1 + ", strProperty1=" + strProperty1 + ", strProperty2="
+				+ strProperty2 + "]";
 	}
-	
-	
 	
 	
 }
