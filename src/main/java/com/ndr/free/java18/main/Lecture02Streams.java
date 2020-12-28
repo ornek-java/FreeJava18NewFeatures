@@ -7,6 +7,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import com.ndr.free.java18.model.SampleModel;
 
@@ -16,16 +17,21 @@ public class Lecture02Streams {
 	
 	public static void main(String[] args) {
 		List<SampleModel> sampleModelList = new ArrayList<>();
+		sampleModelList.add(new SampleModel(1));
+		sampleModelList.add(new SampleModel(3));
+		sampleModelList.add(new SampleModel(2));
+		sampleModelList.add(new SampleModel(4));
 		
 		operationsOnStreams(sampleModelList);
 		
 		parallelStreams(sampleModelList);
 		
 		groupingStreamsByProperty(sampleModelList);
+		
+		traversingStreams(sampleModelList);
 	}
 
 	
-
 	private static void operationsOnStreams(List<SampleModel> sampleModelList) {
 		List<String> sampleModelList2 = sampleModelList.stream()
 														.filter(sampleModel -> sampleModel.getIntProperty1() < 100) // Intermediate Operation
@@ -51,5 +57,13 @@ public class Lecture02Streams {
 		
 	}
 	
+	private static void traversingStreams(List<SampleModel> sampleModelList) {
+		Stream<SampleModel> sampleModelStream = sampleModelList.stream();
+		sampleModelStream.forEach(System.out::println); 
+		sampleModelStream.forEach(System.out::println); // stream is consumed, i.e. processed and closed
+	}
+
+
+
 	
 }
