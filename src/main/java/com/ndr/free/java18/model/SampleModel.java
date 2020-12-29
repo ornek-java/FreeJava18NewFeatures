@@ -5,6 +5,8 @@ public class SampleModel {
 	private Integer intProperty1;
 	private String strProperty1;
 	private String strProperty2;
+	private boolean boolProperty1;
+	
 	
 	public SampleModel() {
 	}
@@ -35,11 +37,22 @@ public class SampleModel {
 		return intProperty1;
 	}
 
+	public boolean isBoolProperty1() {
+		return boolProperty1;
+	}
+
+	public void setBoolProperty1(boolean boolProperty1) {
+		this.boolProperty1 = boolProperty1;
+	}
+
 	@Override
 	public String toString() {
 		return "SampleModel [intProperty1=" + intProperty1 + ", strProperty1=" + strProperty1 + ", strProperty2="
-				+ strProperty2 + "]";
+				+ strProperty2 + ", boolProperty1=" + boolProperty1 + "]";
 	}
+
+	
+	
 	
 	
 }
