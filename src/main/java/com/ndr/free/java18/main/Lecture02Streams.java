@@ -398,12 +398,13 @@ public class Lecture02Streams {
 		//Collecting data in subgroups
 		Map<String, Long> strPropertyCount = sampleModelList.stream().collect( Collectors.groupingBy(SampleModel::getStrProperty1, Collectors.counting()));
 		
-		//ADAPTING THE COLLECTOR RESULT TO A DIFFERENT TYPE
+		
 		Map<String, SampleModel> highestIntPropertyByStrProperty = sampleModelList.stream()
 				.collect(Collectors.groupingBy(SampleModel::getStrProperty1
 						, Collectors.collectingAndThen(Collectors.maxBy(Comparator.comparingInt(SampleModel::getIntProperty1))
 								, Optional::get)));
-		//EXAMPLES OF COLLECTORS USED IN CONJUNCTION WITH GROUPING BY
+		
+		
 		Map<String, Integer> totalIntPropertiesByStrProperty = sampleModelList.stream()
 				.collect(Collectors.groupingBy(SampleModel::getStrProperty1
 						, Collectors.summingInt(SampleModel::getIntProperty1)));
