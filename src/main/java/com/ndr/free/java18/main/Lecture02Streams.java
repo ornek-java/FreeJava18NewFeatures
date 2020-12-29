@@ -2,25 +2,38 @@ package com.ndr.free.java18.main;
 
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalInt;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.ndr.free.java18.model.SampleModel;
 import com.ndr.samples.java18.model.SampleModel12;
 import com.ndr.samples.java18.model.SampleModel13;
+import com.ndr.samples.java18.model.SampleModel14;
 
 public class Lecture02Streams {
 
 	
 	
 	public static void main(String[] args) {
+		
+		creatingStreams();
+		
 		List<SampleModel> sampleModelList = new ArrayList<>();
 		sampleModelList.add(new SampleModel(1));
 		sampleModelList.add(new SampleModel(3));
@@ -33,6 +46,8 @@ public class Lecture02Streams {
 		
 		traversingStreams(sampleModelList);
 		
+		listingStreamElements(sampleModelList);
+		
 		findingCountOfElementsInAStream(sampleModelList);
 		
 		truncatingStreams(sampleModelList);
@@ -40,16 +55,100 @@ public class Lecture02Streams {
 		findingInStreams(sampleModelList);
 		
 		matchingInStreams(sampleModelList);
+		
+		sortingStreams(sampleModelList);
 				
 		convertingStreamsInToList(sampleModelList);
 		
 		mappingElementsOfStream(sampleModelList);
-				
+						
 		groupingStreamsByProperty(sampleModelList);
 		
 		slicingStreams(sampleModelList);
 		
 		flatteningStreams(sampleModelList);
+		
+		concatenatingStreamElements(sampleModelList);
+		
+		convertingStreams(sampleModelList);
+		
+	}
+
+
+	private static void creatingStreams() {
+		//Streams from values
+		Stream<String> stringStream = Stream.of("AAA ", "BBB", "CCC", "DDD");
+		
+		//Creating an empty stream
+		Stream<String> emptyStream = Stream.empty();
+		
+		//Stream from nullable
+		String sampleString = null;
+		Stream<String> homeValueStream = Stream.ofNullable(sampleString); // Java 1.9
+		
+		//Creating Streams from arrays
+		int[] numbers = {2, 3, 5, 7, 11, 13};
+		IntStream intStream = Arrays.stream(numbers);
+		
+		//Creating Streams from files
+		try(Stream<String> lines = Files.lines(Paths.get("<fileName"), Charset.defaultCharset())){
+			//TODO 
+		}
+		catch(IOException e){
+		}
+		
+		//Numeric Streams
+		IntStream evenNumbers = IntStream.rangeClosed(1, 100)
+				.filter(n -> n % 2 == 0); //Represents stream of even numbers
+		System.out.println(evenNumbers.count());
+
+		//Creating Streams from functions
+		Stream.iterate(0, n -> n + 2)
+				.limit(10)
+				.forEach(System.out::println);
+		
+		Stream.generate(Math::random)
+						.limit(5)
+						.forEach(System.out::println);
+	}
+
+
+	private static void convertingStreams(List<SampleModel> sampleModelList) {
+		//CONVERTING BACK TO A STREAM OF OBJECTS
+		IntStream intStream = sampleModelList.stream().mapToInt(SampleModel::getIntProperty1);
+		Stream<Integer> stream = intStream.boxed();
+
+	}
+
+
+	private static void listingStreamElements(List<SampleModel> sampleModelList) {
+		sampleModelList.stream()
+			.forEach(System.out::println);
+	}
+
+
+	private static void concatenatingStreamElements(List<SampleModel> sampleModelList) {
+		String sortedUniqueStrProperties = sampleModelList.stream()
+															.map(sampleModel -> sampleModel.getStrProperty1() )
+															.distinct()
+															.sorted()
+															.reduce("", (str1, str2) -> str1 + str2);
+
+		String sortedUniqueStrProperties2 = sampleModelList.stream()
+															.map(sampleModel -> sampleModel.getStrProperty1() )
+															.distinct()
+															.sorted()
+															.collect(joining());
+		
+	}
+
+
+	private static void sortingStreams(List<SampleModel> sampleModelList) {
+		//sort by value (small to high)
+		List<SampleModel> sampleModelList2 = sampleModelList.stream()
+															.filter(sampleModel -> sampleModel.getIntProperty1() >= 50)
+															.sorted(comparing(SampleModel::getIntProperty1))
+															.collect(toList());
 		
 	}
 
@@ -64,12 +163,30 @@ public class Lecture02Streams {
 
 	private static void findingInStreams(List<SampleModel> sampleModelList) {
 		boolean isAnyMatch = sampleModelList.stream().anyMatch(SampleModel::isBoolProperty1); // returns true if there is an element in the stream matching the predicate
-		
-		
+
+
 		Optional<SampleModel> optSampleModel = sampleModelList.stream()
 				.filter(SampleModel::isBoolProperty1)
 				.findAny(); //returns the first element of the stream that matches the predicate(short-circuiting)
-		
+
+
+		//The highest int property
+		Optional<Integer> highestIntProperty = sampleModelList.stream()
+				.map(SampleModel::getIntProperty1)
+				.reduce(Integer::max);
+
+		//Finds the SampleModel object with the smallest int property
+		Optional<SampleModel> optSampleModelWithSmallestIntProperty = sampleModelList.stream()
+				.reduce((sampleModel_1, sampleModel_2) -> sampleModel_1.getIntProperty1() < sampleModel_2.getIntProperty1() ? sampleModel_1 : sampleModel_2);
+
+		Optional<SampleModel> optSampleModelWithSmallestIntProperty2 = sampleModelList.stream()
+				.min(comparing(SampleModel::getIntProperty1));
+
+		OptionalInt maxCalories = sampleModelList.stream()
+				.mapToInt(SampleModel::getIntProperty1)
+				.max();
+
+		int max = maxCalories.orElse(1); // default maximum if there is no value
 	}
 
 
@@ -96,6 +213,19 @@ public class Lecture02Streams {
 				.map(SampleModel::getStrProperty1) //applies function to each element of the stream
 				.collect(toList());
 		
+		List<String> uniqueStrPropertyList = sampleModelList.stream()
+				.map(sampleModel -> sampleModel.getStrProperty1())
+				.distinct()
+				.collect(toList());
+		
+		Set<String> uniqueStrPropertySet = sampleModelList.stream()
+				.map(sampleModel -> sampleModel.getStrProperty1())
+				.collect(toSet());
+		
+		//MAPPING TO A NUMERIC STREAM
+		int minIntProperty = sampleModelList.stream()
+									.mapToInt(SampleModel::getIntProperty1)	
+									.sum();
 	}
 
 
@@ -124,8 +254,8 @@ public class Lecture02Streams {
 
 	private static void convertingStreamsInToList(List<SampleModel> sampleModelList) {
 		List<SampleModel> sampleModel1List2 = sampleModelList.stream()
-				.filter(SampleModel::isBoolProperty1) //Method reference
-				.distinct() //according to the hashcode and equals methods of the stream's object
+				.filter(SampleModel::isBoolProperty1) 
+				.distinct() //uses hashcode and equals methods of the stream's object
 				.collect(toList());
 		
 	}
