@@ -12,6 +12,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,9 +25,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import com.ndr.free.java18.model.SampleModel;
-import com.ndr.samples.java18.model.SampleModel12;
-import com.ndr.samples.java18.model.SampleModel13;
-import com.ndr.samples.java18.model.SampleModel14;
 
 public class Lecture02Streams {
 
@@ -57,20 +57,68 @@ public class Lecture02Streams {
 		matchingInStreams(sampleModelList);
 		
 		sortingStreams(sampleModelList);
+		
+		slicingStreams(sampleModelList);
 				
 		convertingStreamsInToList(sampleModelList);
 		
 		mappingElementsOfStream(sampleModelList);
-						
-		groupingStreamsByProperty(sampleModelList);
-		
-		slicingStreams(sampleModelList);
-		
+	
 		flatteningStreams(sampleModelList);
 		
 		concatenatingStreamElements(sampleModelList);
 		
 		convertingStreams(sampleModelList);
+		
+		summarizingStreams(sampleModelList);
+		
+		groupingStreamsByProperty(sampleModelList);
+		
+		partitioningStreams(sampleModelList);
+	}
+
+
+	private static void partitioningStreams(List<SampleModel> sampleModelList) {
+		Map<Boolean, List<SampleModel>> sampleModelListByBoolProperty1 = sampleModelList.stream().collect(Collectors.partitioningBy(SampleModel::isBoolProperty1));
+		
+		
+		Map<Boolean, Map<String, List<SampleModel>>> sampleModelListByBoolProperty1ByStrProperty1 = sampleModelList.stream()
+																									.collect(
+																											Collectors.partitioningBy(SampleModel::isBoolProperty1, 
+																																	  Collectors.groupingBy(SampleModel::getStrProperty1)
+																																	 )
+																											);
+		
+		Map<Boolean, SampleModel> sampleModelListPartitionedByHighestIntProperty1 = sampleModelList.stream()
+						.collect(
+								Collectors.partitioningBy(SampleModel::isBoolProperty1, 
+														  Collectors.collectingAndThen(
+																  					  Collectors.maxBy(
+																  							  		   Comparator.comparingInt(SampleModel::getIntProperty1)
+																  							  		   )
+																  					  , Optional::get
+																  					  )
+														  )
+								);
+		
+	}
+
+
+	private static void summarizingStreams(List<SampleModel> sampleModelList) {
+		int totalIntProperties = sampleModelList.stream().collect(Collectors.summingInt(SampleModel::getIntProperty1));
+		
+		double avgIntProperties = sampleModelList.stream().collect(Collectors.averagingInt(SampleModel::getIntProperty1));
+		
+		IntSummaryStatistics intPropertyStatistics = sampleModelList.stream().collect(Collectors.summarizingInt(SampleModel::getIntProperty1));
+		
+		int totalIntProperties2 = sampleModelList.stream().collect(Collectors.reducing(0, SampleModel::getIntProperty1, (intProperty1, intProperty2) -> intProperty1 + intProperty2));
+
+		int totalIntProperties3 = sampleModelList.stream().collect(Collectors.reducing(0, SampleModel::getIntProperty1, Integer::sum));
+
+		int totalIntProperties4 = sampleModelList.stream().map(SampleModel::getIntProperty1).reduce(Integer::sum).get();
+
+		int totalIntProperties5 = sampleModelList.stream().mapToInt(SampleModel::getIntProperty1).sum(); //IntStream avoids auto-unboxing 
+
 		
 	}
 
@@ -128,6 +176,7 @@ public class Lecture02Streams {
 
 
 	private static void concatenatingStreamElements(List<SampleModel> sampleModelList) {
+		
 		String sortedUniqueStrProperties = sampleModelList.stream()
 															.map(sampleModel -> sampleModel.getStrProperty1() )
 															.distinct()
@@ -139,6 +188,10 @@ public class Lecture02Streams {
 															.distinct()
 															.sorted()
 															.collect(joining());
+		
+		String allStrProperties = sampleModelList.stream().map(SampleModel::getStrProperty1).collect(Collectors.joining());
+		
+		String allStrPropertiesWithComma = sampleModelList.stream().map(SampleModel::getStrProperty1).collect(Collectors.joining(", "));
 		
 	}
 
@@ -175,7 +228,16 @@ public class Lecture02Streams {
 				.map(SampleModel::getIntProperty1)
 				.reduce(Integer::max);
 
-		//Finds the SampleModel object with the smallest int property
+		//The SampleModel object with the highet int property
+		Comparator<SampleModel> sampleModel15Comparator = Comparator.comparingInt(SampleModel::getIntProperty1);
+		
+		Optional<SampleModel> sampleModelWithHighestIntProperty = sampleModelList.stream()
+											.collect(Collectors.maxBy(sampleModel15Comparator));
+		
+		Optional<SampleModel> sampleModelWithHighestIntProperty2 = sampleModelList.stream()
+				.collect(Collectors.reducing( (sampleModel_1, sampleModel_2) -> sampleModel_1.getIntProperty1() > sampleModel_2.getIntProperty1() ? sampleModel_1 : sampleModel_2));
+		
+		//The SampleModel object with the smallest int property
 		Optional<SampleModel> optSampleModelWithSmallestIntProperty = sampleModelList.stream()
 				.reduce((sampleModel_1, sampleModel_2) -> sampleModel_1.getIntProperty1() < sampleModel_2.getIntProperty1() ? sampleModel_1 : sampleModel_2);
 
@@ -253,20 +315,27 @@ public class Lecture02Streams {
 
 
 	private static void convertingStreamsInToList(List<SampleModel> sampleModelList) {
-		List<SampleModel> sampleModel1List2 = sampleModelList.stream()
+		List<SampleModel> sampleModelList2 = sampleModelList.stream()
 				.filter(SampleModel::isBoolProperty1) 
 				.distinct() //uses hashcode and equals methods of the stream's object
 				.collect(toList());
 		
+		List<SampleModel> sampleModelList3 = sampleModelList.stream()
+				.filter(sampleModel -> sampleModel.getIntProperty1() > 50 )
+				.collect(Collectors.toList());
 	}
 
 
 	private static void findingCountOfElementsInAStream(List<SampleModel> sampleModelList) {
-		long count = sampleModelList.stream()
+		long count1 = sampleModelList.stream().count();
+		
+		long count2 = sampleModelList.stream()
 				.filter(sampleModel -> sampleModel.getIntProperty1() > 100)
 				.distinct()
 				.limit(3)
 				.count();
+		
+		long count3 = sampleModelList.stream().collect(Collectors.counting());
 		
 	}
 
@@ -291,8 +360,70 @@ public class Lecture02Streams {
 	}
 	
 	private static void groupingStreamsByProperty(List<SampleModel> sampleModelList) {
-		Map<String, List<SampleModel>> sampleModelListByStrProperty = sampleModelList.stream()
+		Map<String, List<SampleModel>> sampleModelListByStrProperty = sampleModelList.stream().collect(Collectors.groupingBy(SampleModel::getStrProperty1));
+		
+		Map<String, List<SampleModel>> sampleModelListByStrProperty2 = sampleModelList.stream()
 																						.collect(groupingBy(SampleModel::getStrProperty1));
+		
+		
+		
+		Map<String, List<SampleModel>> sampleModel15ByGroup = sampleModelList.stream().collect( 		
+											Collectors.groupingBy(sampleModel -> { if (sampleModel.getIntProperty1() < 50) 
+																						return "GROUP1";
+																						else return "GROUP2";
+																					} 
+											));
+		
+		//Manipulating grouped elements
+		Map<String, List<SampleModel>> sampleModelByStrPropertyFiltered = sampleModelList.stream()
+									.collect(Collectors.groupingBy(SampleModel::getStrProperty1, Collectors.filtering(sampleModel -> sampleModel.getIntProperty1() > 50), Collectors.toList()));
+				
+		Map<String, List<String>> strProperty2ListByStrProperty = sampleModelList.stream()
+								.collect(Collectors.groupingBy(SampleModel::getStrProperty2, Collectors.mapping(SampleModel::getStrProperty2, Collectors.toList())));
+				
+		Map<String, Set<String>> strPropertyListByStrProperty = sampleModelList.stream()
+								.collect(Collectors.groupingBy(SampleModel::getStrProperty, Collectors.flatMapping(sampleModel15 -> sampleModel15.getStrListProperty().stream(), Collectors.toSet())));
+				
+		
+		//Multilevel grouping
+		Map<String, Map<String, List<SampleModel>>> sampleModel15ByStrPropertyGroup = sampleModelList.stream()
+												.collect(Collectors.groupingBy(SampleModel::getStrProperty1, Collectors.groupingBy(sampleModel -> {
+																													if (sampleModel.getIntProperty1() < 50) 
+																														return "GROUP1";
+																													else return "GROUP2";
+																											} )
+																				)
+														);
+		
+		//Collecting data in subgroups
+		Map<String, Long> strPropertyCount = sampleModelList.stream().collect( Collectors.groupingBy(SampleModel::getStrProperty1, Collectors.counting()));
+		
+		//ADAPTING THE COLLECTOR RESULT TO A DIFFERENT TYPE
+		Map<String, SampleModel> highestIntPropertyByStrProperty = sampleModelList.stream()
+				.collect(Collectors.groupingBy(SampleModel::getStrProperty1
+						, Collectors.collectingAndThen(Collectors.maxBy(Comparator.comparingInt(SampleModel::getIntProperty1))
+								, Optional::get)));
+		//EXAMPLES OF COLLECTORS USED IN CONJUNCTION WITH GROUPING BY
+		Map<String, Integer> totalIntPropertiesByStrProperty = sampleModelList.stream()
+				.collect(Collectors.groupingBy(SampleModel::getStrProperty1
+						, Collectors.summingInt(SampleModel::getIntProperty1)));
+
+
+		Map<String, Set<String>> sampleModel15GroupBycaloricLevelsByType = sampleModelList.stream()
+				.collect( Collectors.groupingBy(SampleModel::getStrProperty1
+						, Collectors.mapping(sampleModel -> {
+							if (sampleModel.getIntProperty1() < 50) 
+								return "GROUP1";
+							else return "GROUP2"; }
+						, Collectors.toSet() )));
+
+		Map<String, Set<String>> caloricLevelsByType = sampleModelList.stream()
+				.collect( groupingBy(SampleModel::getStrProperty, sampleModel15(dish -> {
+					if (sampleModel15.getIntProperty() < 50) 
+						return "GROUP1";
+					else return "GROUP2"; 
+				},
+						toCollection(HashSet::new) )));
 		
 	}
 	
