@@ -412,19 +412,29 @@ public class Lecture02Streams {
 
 		Map<String, Set<String>> intProperty1GroupByStrProperty1 = sampleModelList.stream()
 				.collect( Collectors.groupingBy(SampleModel::getStrProperty1
-						, Collectors.mapping(sampleModel -> {
-							if (sampleModel.getIntProperty1() < 50) 
-								return "GROUP1";
-							else return "GROUP2"; }
-						, Collectors.toSet() )));
+												, Collectors.mapping(sampleModel -> {
+																		if (sampleModel.getIntProperty1() < 50) 
+																			return "GROUP1";
+																		else 
+																			return "GROUP2"; 
+																		}
+																	, Collectors.toSet() 
+																	)
+												)
+						);
 
 		Map<String, Set<String>> intProperty1GroupByStrProperty1_2 = sampleModelList.stream()
-				.collect( Collectors.groupingBy(SampleModel::getStrProperty
-						, (sampleModel  -> { 
-								if (sampleModel.getIntProperty1() < 50) 
-									return "GROUP1";
-								else return "GROUP2";}
-						, Collectors.toCollection(HashSet::new) )));
+				.collect( Collectors.groupingBy(SampleModel::getStrProperty1
+												, Collectors.mapping(sampleModel  -> { 
+																		if (sampleModel.getIntProperty1() < 50) 
+																			return "GROUP1";
+																		else 
+																			return "GROUP2";
+																		}
+																	, Collectors.toCollection(HashSet::new) 
+																	)
+												)
+						);
 		
 	}
 	
