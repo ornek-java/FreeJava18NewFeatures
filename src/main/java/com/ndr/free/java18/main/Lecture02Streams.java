@@ -265,17 +265,17 @@ public class Lecture02Streams {
 		Arrays::stream														-> 		Stream<Stream<String>>
 		flatMap(Arrays::stream) 											->		Stream<String>
 		distinct() 															->		Stream<String>
-		List<String> 														-> 		collect(toList())
+		collect(toList()) 													-> 		List<String>
 	*/
 	}
 
 
 	private static void mappingElementsOfStream(List<SampleModel> sampleModelList) {
-		List<String> sampleModelList2 = sampleModelList.stream()
+		List<String> sampleModelStrProperty1List = sampleModelList.stream()
 				.map(SampleModel::getStrProperty1) //applies function to each element of the stream
 				.collect(toList());
 		
-		List<String> uniqueStrPropertyList = sampleModelList.stream()
+		List<String> uniqueStrProperty1List = sampleModelList.stream()
 				.map(sampleModel -> sampleModel.getStrProperty1())
 				.distinct()
 				.collect(toList());
@@ -410,7 +410,7 @@ public class Lecture02Streams {
 						, Collectors.summingInt(SampleModel::getIntProperty1)));
 
 
-		Map<String, Set<String>> sampleModel15GroupBycaloricLevelsByType = sampleModelList.stream()
+		Map<String, Set<String>> intProperty1GroupByStrProperty1 = sampleModelList.stream()
 				.collect( Collectors.groupingBy(SampleModel::getStrProperty1
 						, Collectors.mapping(sampleModel -> {
 							if (sampleModel.getIntProperty1() < 50) 
@@ -418,13 +418,13 @@ public class Lecture02Streams {
 							else return "GROUP2"; }
 						, Collectors.toSet() )));
 
-		Map<String, Set<String>> caloricLevelsByType = sampleModelList.stream()
-				.collect( groupingBy(SampleModel::getStrProperty, sampleModel15(dish -> {
-					if (sampleModel15.getIntProperty() < 50) 
-						return "GROUP1";
-					else return "GROUP2"; 
-				},
-						toCollection(HashSet::new) )));
+		Map<String, Set<String>> intProperty1GroupByStrProperty1_2 = sampleModelList.stream()
+				.collect( Collectors.groupingBy(SampleModel::getStrProperty
+						, (sampleModel  -> { 
+								if (sampleModel.getIntProperty1() < 50) 
+									return "GROUP1";
+								else return "GROUP2";}
+						, Collectors.toCollection(HashSet::new) )));
 		
 	}
 	
