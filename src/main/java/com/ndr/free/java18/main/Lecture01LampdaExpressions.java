@@ -49,6 +49,7 @@ public class Lecture01LampdaExpressions {
 		
 		Supplier<Double> supplier1 = () -> Math.PI;
 		System.out.println(supplier1.get());
+
 		
 		Consumer<Double> consumer1 = (x) -> System.out.println(x);
 		consumer1.accept(Math.PI);
@@ -93,8 +94,9 @@ public class Lecture01LampdaExpressions {
 		
 		sampleModelList.sort( comparing(SampleModel::getIntProperty1).reversed() );
 		sampleModelList.forEach(s -> System.out.println("3. " + s.getIntProperty1()));
+				
 	}
-	
+		
 	private static void methodReferences() {
 		BiFunction<Double,Double,Double> function1 = Math::pow;
 		System.out.println(function1.apply(new Double(2), new Double(4)));
@@ -103,9 +105,9 @@ public class Lecture01LampdaExpressions {
 								return z; 
 							};
 		System.out.println(function1.apply(new Double(2), new Double(4)));
-		
-		
-		
+		Function<SampleModel,String> function2 = SampleModel::toString;
+		System.out.println(function2.apply(new SampleModel(0,"A","B",false)));
+			
 	}
 	
 	private static void constructerReferences() {

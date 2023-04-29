@@ -11,6 +11,14 @@ public class SampleModel {
 	public SampleModel() {
 	}
 	
+	public SampleModel(Integer intProperty1, String strProperty1, String strProperty2, boolean boolProperty1) {
+		super();
+		this.intProperty1 = intProperty1;
+		this.strProperty1 = strProperty1;
+		this.strProperty2 = strProperty2;
+		this.boolProperty1 = boolProperty1;
+	}
+
 	public SampleModel(Integer intProperty1) {
 		this.intProperty1 = intProperty1;
 	}
