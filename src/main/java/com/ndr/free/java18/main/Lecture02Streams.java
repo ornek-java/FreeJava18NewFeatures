@@ -20,6 +20,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.OptionalInt;
 import java.util.Set;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -304,11 +306,11 @@ public class Lecture02Streams {
 	 */
 	private static void slicingStreams(List<SampleModel> sampleModelList) {
 		List<SampleModel> sampleModel12List2 = sampleModelList.stream()
-				.takeWhile(sampleModel12 -> sampleModel12.getIntProperty() <= 100) //stops when an element is found to not match 
+				.takeWhile(sampleModel12 -> sampleModel12.getIntProperty1() <= 100) //stops when an element is found to not match 
 				.collect(Collectors.toList());
 
 		List<SampleModel> sampleModel12List3 = sampleModelList.stream()
-				.dropWhile(sampleModel12 -> sampleModel12.getIntProperty() > 100) //when an element is found to match stops and returns all remaining elements 
+				.dropWhile(sampleModel12 -> sampleModel12.getIntProperty1() > 100) //when an element is found to match stops and returns all remaining elements 
 				.collect(Collectors.toList());
 
 	}
@@ -375,14 +377,24 @@ public class Lecture02Streams {
 											));
 		
 		//Manipulating grouped elements
-		Map<String, List<SampleModel>> sampleModelByStrPropertyFiltered = sampleModelList.stream()
-									.collect(Collectors.groupingBy(SampleModel::getStrProperty1, Collectors.filtering(sampleModel -> sampleModel.getIntProperty1() > 50), Collectors.toList()));
+		Predicate<SampleModel>  predicate1 = (SampleModel sampleModel) -> sampleModel.getIntProperty1() > 50;
+		Map<String, List<SampleModel>> sampleModelByStrPropertyFiltered = 
+											sampleModelList.stream()
+															.collect(Collectors.groupingBy(SampleModel::getStrProperty1
+																		, Collectors.filtering(predicate1, Collectors.toList())
+																	     				   )
+																    );
 				
 		Map<String, List<String>> strProperty2ListByStrProperty = sampleModelList.stream()
 								.collect(Collectors.groupingBy(SampleModel::getStrProperty2, Collectors.mapping(SampleModel::getStrProperty2, Collectors.toList())));
-				
+		
+		Function<SampleModel, Stream<String>> function1 = (SampleModel sampleModel) -> sampleModel.getStrListProperty().stream();
 		Map<String, Set<String>> strPropertyListByStrProperty = sampleModelList.stream()
-								.collect(Collectors.groupingBy(SampleModel::getStrProperty, Collectors.flatMapping(sampleModel15 -> sampleModel15.getStrListProperty().stream(), Collectors.toSet())));
+								.collect(
+										Collectors.groupingBy(SampleModel::getStrProperty1
+												, Collectors.flatMapping(function1, Collectors.toSet())
+												)
+										);
 				
 		
 		//Multilevel grouping

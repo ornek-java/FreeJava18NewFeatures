@@ -1,11 +1,15 @@
 package com.ndr.free.java18.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SampleModel {
 
 	private Integer intProperty1;
 	private String strProperty1;
 	private String strProperty2;
 	private boolean boolProperty1;
+	private List<String> strListProperty = new ArrayList<String>();
 	
 	
 	public SampleModel() {
@@ -57,6 +61,14 @@ public class SampleModel {
 	public String toString() {
 		return "SampleModel [intProperty1=" + intProperty1 + ", strProperty1=" + strProperty1 + ", strProperty2="
 				+ strProperty2 + ", boolProperty1=" + boolProperty1 + "]";
+	}
+
+	public List<String> getStrListProperty() {
+		return strListProperty;
+	}
+
+	public void setStrListProperty(List<String> strListProperty) {
+		this.strListProperty = strListProperty;
 	}
 
 	
